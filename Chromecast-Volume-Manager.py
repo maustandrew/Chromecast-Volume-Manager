@@ -30,10 +30,10 @@ def init():
     castName = sys.argv[1]
     print("Managing the volume of " + castName)
     chromecast = getDevice()
-    print(chromecast)
-    if chromecast.startswith("Chromecast") == True:
+    if type(chromecast) == pychromecast.Chromecast:
         try:
             chromecast.wait()
+            print(chromecast.status)
         except:
             print("Cant connect to Chromecast")
             reconnect()
