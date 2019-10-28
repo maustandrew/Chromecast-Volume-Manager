@@ -4,6 +4,7 @@ import time
 
 castName = ""
 chromecast = ""
+volume = 20
 
 def reconnect(code):
     global chromecast
@@ -49,13 +50,14 @@ def reconnect(code):
 
 def changeVolume():
     global chromecast
+    global volume
     try:
         if chromecast.status.volume_level < 1:
             print('[STATUS] %s is currently at %d%%' % (castName, round(chromecast.status.volume_level * 100)))
             time.sleep(120)
             maintain()
         elif chromecast.status.volume_level == 1:
-            chromecast.volume_down(0.65)
+            chromecast.volume_down(1 - volume/100)
             time.sleep(2)
             print('[STATUS] %s is changed to %d%% from 100%%' % (castName, round(chromecast.status.volume_level * 100)))
             time.sleep(120)
@@ -93,8 +95,18 @@ def init():
     #Sets up device info and send Initial Attempt to connect to the device
     global castName
     global chromecast
-    castName = sys.argv[1]
+    global volume
+    try:
+        castName = sys.argv[1]
+    except:
+        castName = input("[ERROR] No Chromecast name given, please input the name of a Chromecast on your local network: ")
+    try:
+        volume = int(sys.argv[2])
+        print(volume)
+    except:
+        print("No volume was passed into the command line, Chromecast Volume Manager will set your Chromecast to a default volume of %s" % volume)
     print("Managing the volume of " + castName)
+    print("Volume set to %s" % volume)
     chromecast = getDevice()
     if type(chromecast) == pychromecast.Chromecast:
         try:
